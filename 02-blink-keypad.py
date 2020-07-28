@@ -20,6 +20,7 @@ def on_key(key_index, is_pressed):
             display.drawPixel(x,y,0x004040)
         elif pattern[x + y * 4] == 3:
             display.drawPixel(x,y,0x404000)
+        print(x,y,pattern)
         display.flush()
 
 keypad.add_handler(on_key)
