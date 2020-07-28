@@ -1,4 +1,4 @@
-import display, time, keypad, virtualtimers, appconfig, sndmixer, wifi, ugTTS
+import system, display, time, keypad, touchpads, virtualtimers, appconfig, sndmixer, wifi, ugTTS
 
 settings = appconfig.get('blink', {'pattern': [0,1,1,0, 1,2,2,1, 1,2,2,1, 0,1,1,0], 'interval': 1000, 'color_on': 0x808080, 'color_off': 0x000000})
 pattern  = settings['pattern']
