@@ -1,4 +1,4 @@
-import display, time, keypad, virtualtimers, appconfig, sndmixer, wifi, ugTTS
+import display, time, keypad, virtualtimers, appconfig, sndmixer, wifi, ugTTS, audio
 
 settings = appconfig.get('blink', {'pattern': [0,1,1,0, 1,2,2,1, 1,2,2,1, 0,1,1,0], 'interval': 1000, 'color_on': 0x808080, 'color_off': 0x000000})
 pattern  = settings['pattern']
@@ -121,13 +121,17 @@ def draw():
     return interval
 
 # initiate WiFi connection for the Text-to-Speach interface
-print("Connecting to WiFi, please wait.")
-wifi.connect() # Connect to the WiFi network using the stored credentials
-if not wifi.wait():
-    print("Unable to connect to the WiFi network.")
-else:
-    connected = True
-    ugTTS.speak("You are now connected to WiFi!")
+if not wifi.status():
+    print("Connecting to WiFi, please wait.")
+    audio.play('/cache/system/wifi_connecting.mp3')
+    wifi.connect()
+    if not wifi.wait():
+        audio.play('/cache/system/wifi_failed.mp3')
+        print("Unable to connect to the WiFi network.")
+    else:
+        connected = True
+        audio.play('/cache/system/wifi_connected.mp3')
+        print("Connected to the WiFi network.")
 
 sndmixer.begin(1)
 synth = sndmixer.synth()

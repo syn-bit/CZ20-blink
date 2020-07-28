@@ -110,14 +110,17 @@ def draw():
     return interval
 
 # initiate WiFi connection for the Text-to-Speach interface
-print("Connecting to WiFi, please wait.")
-wifi.connect() # Connect to the WiFi network using the stored credentials
-if not wifi.wait():
-    print("Unable to connect to the WiFi network.")
-else:
-    connected = True
-    print("You are now connected to WiFi!")
-    ugTTS.speak("You are now connected to WiFi!")
+if not wifi.status():
+    print("Connecting to WiFi, please wait.")
+    audio.play('/cache/system/wifi_connecting.mp3')
+    wifi.connect()
+    if not wifi.wait():
+        audio.play('/cache/system/wifi_failed.mp3')
+        print("Unable to connect to the WiFi network.")
+    else:
+        connected = True
+        audio.play('/cache/system/wifi_connected.mp3')
+        print("Connected to the WiFi network.")
 
 sndmixer.begin(1)
 synth = sndmixer.synth()
