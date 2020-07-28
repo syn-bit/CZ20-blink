@@ -1,8 +1,42 @@
 import display, time, keypad, virtualtimers, appconfig
 
-settings = appconfig.get("blink", {"pattern": [0,1,1,0, 1,2,2,1, 1,2,2,1, 0,1,1,0], "interval": 1000, color_on: 0x808080, color_off: 0x000000})
+settings = appconfig.get('blink', {'pattern': [0,1,1,0, 1,2,2,1, 1,2,2,1, 0,1,1,0], 'interval': 1000, 'color_on': 0x808080, 'color_off': 0x000000})
 pattern  = settings['pattern']
+interval = settings['interval']
 counter  = 0
+blinking = True
+
+def interval_down(is_pressed):
+    global interval
+
+    if is_pressed:
+        interval = interval // 2 if interval >= 100 else 50
+        print("Interval is now {}".format(interval))
+        
+
+def interval_up(is_pressed):
+    global interval
+
+    if is_pressed:
+        interval = interval * 2 if interval <= 5000 else 10000
+        print("Interval is now {}".format(interval))
+        
+
+def stop_blinking(is_pressed):
+    global blinking
+
+    if is_pressed:
+        blinking = False
+        print("Blinking is now {}".format(blinking))
+
+
+def continue_blinking(is_pressed):
+    global blinking
+
+    if is_pressed:
+        blinking = True
+        print("Blinking is now {}".format(blinking))
+
 
 def on_key(key_index, is_pressed):
     global pattern
@@ -24,6 +58,9 @@ def on_key(key_index, is_pressed):
 def draw():
     global counter
 
+    if blinking:
+        counter += 1
+
     for y in range(4):
         for x in range(4):
             color = settings['color_off']
@@ -44,10 +81,14 @@ def draw():
 
             display.drawPixel(x,y,color)
     display.flush()
-    counter += 1
-    return settings['interval']
+
+    return interval
 
 # Adding callbacks
 virtualtimers.begin(50)
 virtualtimers.new(0, draw, False)
 keypad.add_handler(on_key)
+touchpads.on(touchpads.RIGHT, interval_up)
+touchpads.on(touchpads.LEFT, interval_down)
+touchpads.on(touchpads.CANCEL, stop_blinking)
+touchpads.on(touchpads.OK, continue_blinking)
