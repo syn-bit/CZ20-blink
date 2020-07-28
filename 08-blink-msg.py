@@ -7,15 +7,16 @@ counter  = 0
 blinking = True
 cnnected = False
 
+def msg(text):
+    func = ugTTS.speak if connected else print
+    func(text)
+    
 def interval_down(is_pressed):
     global interval
 
     if is_pressed:
         interval = interval // 2 if interval >= 100 else 50
-        if connected:
-            ugTTS.speak("Interval is now {}".format(interval))
-        else:
-            print("Interval is now {}".format(interval))
+        msg("Interval is now {}".format(interval))
         
 
 def interval_up(is_pressed):
@@ -23,10 +24,7 @@ def interval_up(is_pressed):
 
     if is_pressed:
         interval = interval * 2 if interval <= 5000 else 10000
-        if connected:
-            ugTTS.speak("Interval is now {}".format(interval))
-        else:
-            print("Interval is now {}".format(interval))
+        msg("Interval is now {}".format(interval))
         
 
 def stop_blinking(is_pressed):
@@ -34,10 +32,7 @@ def stop_blinking(is_pressed):
 
     if is_pressed:
         blinking = False
-        if connected:
-            ugTTS.speak("Blinking is now {}".format(blinking))
-        else:
-            print("Blinking is now {}".format(blinking))
+        msg("Blinking is now {}".format(blinking))
 
 
 def continue_blinking(is_pressed):
@@ -45,18 +40,12 @@ def continue_blinking(is_pressed):
 
     if is_pressed:
         blinking = True
-        if connected:
-            ugTTS.speak("Blinking is now {}".format(blinking))
-        else:
-            print("Blinking is now {}".format(blinking))
+        msg("Blinking is now {}".format(blinking))
 
 
 def goodbye(is_pressed):
     if is_pressed:
-        if connected:
-            ugTTS.speak("Well kids, that concludes our demo for today!")
-        else:
-            print("Well kids, that concludes our demo for today!")
+        msg("Well kids, that concludes our demo for today!")
         time.sleep(5)
         system.launcher()
 
@@ -127,6 +116,7 @@ if not wifi.wait():
     print("Unable to connect to the WiFi network.")
 else:
     connected = True
+    print("You are now connected to WiFi!")
     ugTTS.speak("You are now connected to WiFi!")
 
 sndmixer.begin(1)
